@@ -1,6 +1,6 @@
 # Catalogue CRUD Application
 
-*** --- WORK IN PROGRESS --- ***
+***--- WORK IN PROGRESS ---***
 
 This program creates a relational SQL database hosted on the Snowflake platform, then opens a CRUD GUI using tkinter to manipulate and view the data. In this application, it is used as a book cataloge.
 
