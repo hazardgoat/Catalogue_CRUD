@@ -2,7 +2,7 @@
 
 ***--- WORK IN PROGRESS ---***
 
-This program creates a relational SQL database hosted on the Snowflake platform, then opens a CRUD GUI using tkinter to manipulate and view the data. In this application, it is used as a book cataloge.
+This program creates a relational SQL database hosted on the Snowflake platform, then opens a CRUD GUI to manipulate and view the data. In this application, it is used as a book cataloge.
 
 **Features:**
 1) Bulk uploads via CSV files to establish the primary catalogue
