@@ -110,7 +110,6 @@ class Database_Setup():
                     .format(table, author_cols[0], author_cols[1], author_cols[2])
                 )
             elif table == 'file':
-                print(table)
                 cur.execute(
                     """
                     CREATE TABLE IF NOT EXISTS {} 
@@ -233,7 +232,6 @@ class Database_Management():
                         items = client.search().query(query=field_values[14], limit=1, ancestor_folder_ids=[box_folder_id], file_extensions=[field_values[15]])
                         for item in items:
                             box_id = item.id
-                            print(box_id)
 
                         col_values = [field_values[14], field_values[15], box_id]
                         skip = False
@@ -335,8 +333,7 @@ class Database_Management():
             elif field_values[1] == 'book':
                 book_fields = [field_values[2], field_values[3], field_values[7], field_values[8], field_values[9], field_values[10], field_values[11]]
                 book_values = [book_cols[0], book_cols[1], book_cols[4], book_cols[5], book_cols[6], book_cols[7], book_cols[8]]
-                for value, col in zip(book_fields, book_values):   
-                    print(value, col)
+                for value, col in zip(book_fields, book_values):
                     if value not in null_values:
                         cur.execute("UPDATE {} SET {}='{}' WHERE id='{}'".format(field_values[1], col, value, field_values[0]))
 
@@ -484,7 +481,7 @@ class Main_Application():
         self.tree = self.List_View
 
     def Window(self):
-        self.root.title("Python Book Library w/ Snowflake SQL: Simple CRUD Applition")
+        self.root.title("Python SQL CRUD Applition")
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
         width = int(screen_width/2)
@@ -530,7 +527,7 @@ class Main_Application():
         return Top, Left, Right, Forms, Buttons
 
     def Labels(self):
-        txt_apptitle = Label(self.Top, width=900, font=('arial', 24), text = "Python: Simple CRUD Application")
+        txt_apptitle = Label(self.Top, width=900, font=('arial', 24), text = "Python SQL CRUD Applition")
         txt_apptitle.pack()
         txt_mediaID = Label(self.Forms, text="ID:", font=('arial', 12), bd=6)
         txt_mediaID.grid(row=1, stick="e")
