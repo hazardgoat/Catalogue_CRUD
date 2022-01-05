@@ -1,4 +1,4 @@
-# Catalogue CRUD Application
+# Python, SQL Catalogue CRUD Application
 
 ![x](https://user-images.githubusercontent.com/74040471/148164815-ffd413bd-8274-4f49-83ea-f1dbcff84dc9.png)
 
