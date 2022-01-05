@@ -4,7 +4,8 @@
 
 This program creates a relational SQL database hosted on the Snowflake platform, then opens a CRUD GUI to manipulate and view the data. In this application, it is used as a book cataloge.
 
-The requirements and primary catalogue files are located in the [Resources](https://github.com/hazardgoat/Catalogue_CRUD/tree/main/Resources) folder
+The requirements and primary catalogue files are located in the [Resources](https://github.com/hazardgoat/Catalogue_CRUD/tree/main/Resources) folder.
+
 **Features:**
 1) Bulk uploads via CSV files to establish the primary catalogue
 2) Individual entries on a given table may be added, updated, and deleted via the GUI interface. 
