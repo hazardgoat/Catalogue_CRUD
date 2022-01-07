@@ -1,9 +1,9 @@
-title,series,genre_id,author_id,description,language,publisher,year,isbn,file_id
-Catboy,,2,4,"Olive is a human, and Henry is her pet cat—although he’s also a person, thanks to a magic shooting star.",English,Silver Sprocket,2017,9781945509704,1
-Tank Girl #1,,3,3,"The original Tank Girl comics, in stunning black and white as they were meant to be seen!",English,Titan Comics,2016,1785853368,1
-The Blade Itself,The First Law,4,2,"Murderous conspiracies rise to the surface, old scores are ready to be settled, and the line between hero and villain is sharp enough to draw blood.",English,Gollancz,2006,575079797,1
-Before They Are Hanged,The First Law,4,2,Ancient secrets will be uncovered. Bloody battles will be won and lost. Bitter enemies will be forgiven – but not before they are hanged.,English,Gollancz,2007,575077883,1
-The Last Argument of Kings,The First Law,4,2,"While the King of the Union lies on his deathbead, the peasants revolt and the nobles scramble to steal his crown. No one believes that the shadow of war is falling across the very heart of the Union. The First of the Magi has a plan to save the world, as he always does. But there are risks. There is no risk more terrible, after all, than to break the First Law...",English,Gollancz,2008,575077905,1
-The Fellowship of the Ring,The Lord of the Rings,4,5,"In a sleepy village in the Shire, young Frodo Baggins finds himself faced with an immense task, as his elderly cousin Bilbo entrusts the Ring to his care. Frodo must leave his home and make a perilous journey across Middle-earth to the Cracks of Doom, there to destroy the Ring and foil the Dark Lord in his evil purpose.",English,Ballantine Books,1973,9780345015339,1
-The Two Towers,The Lord of the Rings,4,5,"While Frodo and Sam made their escape, the rest of the company was attacked by Orcs. Now they continue the journey alone down the great River Anduin—alone, that is, save for the mysterious creeping figure that follows wherever they go.",English,Ballantine Books,1973,345296060,1
-The Return of the King,The Lord of the Rings,4,5,"In the third volume of The Lord of the Rings trilogy the good and evil forces join battle, and we see that the triumph of good is not absolute. The Third Age of Middle-earth ends, and the age of the dominion of Men begins.",English,Ballantine Books,1974,345240340,1
+title,series,genre_id,author_first_name,author_middle_name,author_last_name,language,publisher,year,isbn,file_id
+Catboy,,2,Benji,_,Nate,English,Silver Sprocket,2017,9781945509704,1
+Tank Girl #1,,3,Alan,_,Martin,English,Titan Comics,2016,1785853368,1
+The Blade Itself,The First Law,4,Joe,_,Abercrombie,English,Gollancz,2006,575079797,1
+Before They Are Hanged,The First Law,4,Joe,_,Abercrombie,English,Gollancz,2007,575077883,1
+The Last Argument of Kings,The First Law,4,Joe,_,Abercrombie,English,Gollancz,2008,575077905,1
+The Fellowship of the Ring,The Lord of the Rings,4,J.,R. R.,Tolkien,English,Ballantine Books,1973,9780345015339,1
+The Two Towers,The Lord of the Rings,4,J.,R. R.,Tolkien,English,Ballantine Books,1973,345296060,1
+The Return of the King,The Lord of the Rings,4,J.,R. R.,Tolkien,English,Ballantine Books,1974,345240340,1
