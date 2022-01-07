@@ -1,6 +1,6 @@
 # Catalogue CRUD Application
 
-![z](https://user-images.githubusercontent.com/74040471/148165533-105dbd8c-b06b-4267-8516-92160d32c35e.png)
+![x](https://user-images.githubusercontent.com/74040471/148615802-3dc5cd84-be62-45ef-a7a7-f044eb1898b2.png)
 
 ***--- WORK IN PROGRESS ---***
 
