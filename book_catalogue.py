@@ -63,9 +63,9 @@ class Database_Setup():
     def Create_Database(self, tables=tables_ls):
         cur.execute("CREATE DATABASE IF NOT EXISTS {}".format(database))
         cur.execute("USE DATABASE {}".format(database))
-        # above line has to be executed before the below, as while building the basic structure of Database and Warehouse should be present
+        
         cur.execute("CREATE SCHEMA IF NOT EXISTS {}".format(schema))
-        # Using the Database, Schema, and Warehouse
+
         cur.execute("USE DATABASE {}".format(database))
         cur.execute("USE SCHEMA {}.{}".format(database, schema))
 
