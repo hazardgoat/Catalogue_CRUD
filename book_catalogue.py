@@ -51,7 +51,8 @@ engine = create_engine(URL(
         ))
 engine_conn = engine.connect()
 
-
+# True
+# False
 delete_db = False
 create_db = False
 interact_db = True
@@ -95,21 +96,7 @@ class Database_Setup():
                     """
                     .format(table, genre_cols[0], genre_cols[1], genre_cols[1], tables[0])
                 )
-            elif table == 'author':
-                cur.execute(
-                    """
-                    CREATE TABLE IF NOT EXISTS {} 
-                        (
-                        id INT AUTOINCREMENT,
-                        {} VARCHAR(255),
-                        {} VARCHAR(255),
-                        {} VARCHAR(255),
-                        PRIMARY KEY (id)
-                        )
-                    """
-                    .format(table, author_cols[0], author_cols[1], author_cols[2])
-                )
-            elif table == 'file':
+            elif table == "file":
                 cur.execute(
                     """
                     CREATE TABLE IF NOT EXISTS {} 
@@ -132,8 +119,9 @@ class Database_Setup():
                         {} VARCHAR(255), 
                         {} VARCHAR(255),
                         {} INT,
-                        {} INT,
-                        {} TEXT,
+                        {} VARCHAR(255),
+                        {} VARCHAR(255),
+                        {} VARCHAR(255),
                         {} VARCHAR(255),
                         {} VARCHAR(255),
                         {} VARCHAR(4),
@@ -141,17 +129,17 @@ class Database_Setup():
                         {} INT,
                         PRIMARY KEY (id),
                         CONSTRAINT fk_genre_subgenre_id FOREIGN KEY ({}) REFERENCES {} (id) ON DELETE SET NULL ON UPDATE SET NULL,
-                        CONSTRAINT fk_author_names_id FOREIGN KEY ({}) REFERENCES {} (id) ON DELETE SET NULL ON UPDATE SET NULL,
                         CONSTRAINT fk_file_info_id FOREIGN KEY ({}) REFERENCES {} (id) ON DELETE SET NULL ON UPDATE SET NULL
                         )
                     """
-                    .format(table, book_cols[0], book_cols[1], book_cols[2], book_cols[3], book_cols[4], book_cols[5], book_cols[6], book_cols[7], book_cols[8], book_cols[9], book_cols[2], tables[1], book_cols[3], tables[2], book_cols[9], tables[3])
+                    # table, "title", "series", "genre_id", "author_first_name", "author_middle_name", "author_last_name", "description", "language", "publisher", "year", "isbn", "file_id", genre_id, genre table, file_id, file table
+                    .format(table, book_cols[0], book_cols[1], book_cols[2], book_cols[3], book_cols[4], book_cols[5], book_cols[6], book_cols[7], book_cols[8], book_cols[9], book_cols[10], book_cols[2], tables[1], book_cols[3], tables[1], book_cols[10], tables[2])
                 )
         conn.commit()
 
 
     def Load_Library(self, tables=tables_ls):
-        main_dir = r"C:\Users\USER\Desktop\Catalogue_Tables"
+        main_dir = r"C:\Users\User\Desktop\Catalogue_Tables"
         for table in tables:
             file_name = "{}.csv".format(table)
             file_path = os.path.join(main_dir, file_name)
@@ -181,6 +169,7 @@ class Database_Management():
             txt_result.config(text="Title must be entered!", fg="red")
         else:
             for table, cols in zip(tables, table_columns):
+                print(table, cols)
                 if table == 'subgenre':
                     try:
                         cur.execute("SELECT * FROM {} WHERE {}='{}'".format(table, subgenre_cols[0], field_values[5]))
@@ -203,63 +192,54 @@ class Database_Management():
                         col_values = [field_values[4], subgenre_id]
                         skip = False
 
-                elif table == 'author':
-                    try:
-                        cur.execute("SELECT * FROM {} WHERE ({}='{}' AND {}='{}' AND {}='{}')".format(table, author_cols[0], field_values[6], author_cols[1], field_values[7], author_cols[2], field_values[8]))
-                        cur.fetchone()[1]
-                        cur.fetchone()[2]
-                        cur.fetchone()[3]
-                        skip = True
-                    except:
-                        col_values = [field_values[6], field_values[7], field_values[8]]
-                        skip = False
-
                 elif table == 'file':
                     try:
-                        cur.execute("SELECT * FROM {} WHERE {}='{}'".format(table, file_cols[0], field_values[15]))
+                        cur.execute("SELECT * FROM {} WHERE {}='{}'".format(table, file_cols[0], field_values[14]))
                         int(cur.fetchone()[2])
                         print('File info already exists...skipping')
                         skip = True
+                        print('file skip')
                     except:
-                        pass
-                    else: 
-                        auth = OAuth2(
-                            client_id=client_id,
-                            client_secret=client_secret,
-                            access_token=developer_token,
-                        )
-                        client = Client(auth)
-                        items = client.search().query(query=field_values[14], limit=1, ancestor_folder_ids=[box_folder_id], file_extensions=[field_values[15]])
-                        for item in items:
-                            box_id = item.id
-
-                        col_values = [field_values[14], field_values[15], box_id]
                         skip = False
-                    finally:
-                        print('Not enough file info provided...skipping')
-                        col_values = ['', '', '']
+                    if skip == False:
+                        try:
+                            auth = OAuth2(
+                                client_id=client_id,
+                                client_secret=client_secret,
+                                access_token=developer_token,
+                            )
+                            client = Client(auth)
+                            items = client.search().query(query=field_values[13], limit=1, ancestor_folder_ids=[box_folder_id], file_extensions=[field_values[14]])
+                            for item in items:
+                                box_id = item.id
+
+                            col_values = [field_values[13], field_values[14], box_id]
+                            skip = False
+                        except:
+                            print('Not enough file info provided...skipping')
+                            col_values = ['', '', '']
 
                 elif table == 'book':
                     cur.execute("SELECT * FROM {} WHERE {}='{}'".format(tables[0], subgenre_cols[0], field_values[5]))
                     subgenre_id = int(cur.fetchone()[0])
                     cur.execute("SELECT * FROM {} WHERE ({}='{}' AND {}='{}')".format(tables[1], genre_cols[0], field_values[4], genre_cols[1], subgenre_id))
                     genre_id = cur.fetchone()[0]
-                    cur.execute("SELECT * FROM {} WHERE ({}='{}' AND {}='{}' AND {}='{}')".format(tables[2], author_cols[0], field_values[6], author_cols[1], field_values[7], author_cols[2], field_values[8]))
-                    author_id = cur.fetchone()[0]
-                    cur.execute("SELECT * FROM {} WHERE ({}='{}' AND {}='{}')".format(tables[3], file_cols[0], field_values[14], file_cols[1], field_values[15]))
+                    cur.execute("SELECT * FROM {} WHERE ({}='{}' AND {}='{}')".format(tables[2], file_cols[0], field_values[13], file_cols[1], field_values[14]))
                     file_id = cur.fetchone()[0]
 
                     try:
-                        cur.execute("SELECT * FROM {} WHERE ({}='{}' AND {}='{}')".format(table, book_cols[0], field_values[2], book_cols[8], field_values[13]))
+                        cur.execute("SELECT * FROM {} WHERE ({}='{}' AND {}='{}' AND {}='{}' AND {}='{}' AND {}='{}')".format(table, book_cols[0], field_values[2], book_cols[3], field_values[6], book_cols[4], field_values[7], book_cols[5], field_values[8], book_cols[9], field_values[12]))
                         cur.fetchone()[0]
                         print('Book already exists...skipping')
                         skip = True
                     except:
-                        col_values = [field_values[2], field_values[3], genre_id, author_id, field_values[9], field_values[10], field_values[11], field_values[12], field_values[13], file_id]
+                        col_values = [field_values[2], field_values[3], genre_id, field_values[6], field_values[7], field_values[8], field_values[9], field_values[10], field_values[11], field_values[12], file_id]
                         skip = False
+                        print(col_values)
 
                 if skip == False:         
                     df = pd.DataFrame([col_values], columns=cols)
+                    print(df)
                     df.to_sql('{}'.format(table), con=engine, index=False, if_exists='append')
                     conn.commit()
 
@@ -316,32 +296,30 @@ class Database_Management():
 
                     conn.commit()
 
-            elif field_values[1] == 'author':
-                author_values = [field_values[6], field_values[7], field_values[8]]
-                for field, col in zip (author_values, author_cols):
-                    if field not in null_values:
-                        cur.execute("UPDATE {} SET {}={} WHERE id='{}'".format(field_values[1], col, field, field_values[0]))
-                        conn.commit()
 
             elif field_values[1] == 'file':
-                file_values = [field_values[12], field_values[13], field_values[14]]
+                file_values = [field_values[13], field_values[14], field_values[15]]
                 for value, col in zip(file_values, file_cols):
                     if value not in null_values:
                         cur.execute("UPDATE {} SET {}={} WHERE id='{}'".format(field_values[1], col, value, field_values[0]))
                         conn.commit()
 
             elif field_values[1] == 'book':
-                book_fields = [field_values[2], field_values[3], field_values[7], field_values[8], field_values[9], field_values[10], field_values[11]]
-                book_values = [book_cols[0], book_cols[1], book_cols[4], book_cols[5], book_cols[6], book_cols[7], book_cols[8]]
+                book_fields = field_values[2:4]+field_values[6:13]
+                book_values = book_cols[:2]+book_cols[3:10]
+                print(book_fields)
+                print(book_values)
                 for value, col in zip(book_fields, book_values):
                     if value not in null_values:
+                        print(field_values[1], col, value, field_values[0])
                         cur.execute("UPDATE {} SET {}='{}' WHERE id='{}'".format(field_values[1], col, value, field_values[0]))
 
                 genre_tables = ["subgenre", "genre"]
                 update_genre_cols = [subgenre_cols, genre_cols]
                 if field_values[4] or field_values[5] not in null_values:
                     self.Add_Records(genre_tables, update_genre_cols)
-
+                    
+                    print(tables[0], subgenre_cols[0], field_values[5])
                     cur.execute("SELECT id FROM {} WHERE {}='{}'".format(tables[0], subgenre_cols[0], field_values[5]))
                     subgenre_id = cur.fetchone()[0]
 
@@ -356,20 +334,12 @@ class Database_Management():
                         cur.execute("UPDATE {} SET {}='{}' WHERE id='{}'".format(field_values[1], book_cols[2], genre_id, field_values[0]))
                         conn.commit()
 
-                author_values = [field_values[6], field_values[7], field_values[8]]
-                for value, col in zip(author_values, author_cols):
-                    if value not in null_values:
-                        cur.execute("SELECT {} FROM {} WHERE id='{}'".format(book_cols[3], field_values[1], field_values[0]))
-                        author_id = cur.fetchone()[0]
-                        cur.execute("UPDATE {} SET {}='{}' WHERE id='{}'".format(tables[2], col, value, author_id))
-                        conn.commit()
-
-                file_values = [field_values[14], field_values[15], field_values[16]]
+                file_values = [field_values[13], field_values[14], field_values[15]]
                 for value, col in zip(file_values, file_cols):
                     if value not in null_values:
-                        cur.execute("SELECT {} FROM {} WHERE id='{}'".format(book_cols[9], field_values[1], field_values[0]))
+                        cur.execute("SELECT {} FROM {} WHERE id='{}'".format(book_cols[10], field_values[1], field_values[0]))
                         file_id = cur.fetchone()[0]
-                        cur.execute("UPDATE {} SET {}='{}' WHERE id='{}'".format(tables[3], col, value, file_id))
+                        cur.execute("UPDATE {} SET {}='{}' WHERE id='{}'".format(tables[2], col, value, file_id))
                         conn.commit()
         for field in crud_fields:
             field.set("")
@@ -397,9 +367,6 @@ class Database_Management():
                 cur.execute("UPDATE {} SET {}='1' WHERE {}={}".format(tables_ls[4], book_cols[3], book_cols[3], field_values[0]))
                 cur.execute("DELETE FROM {} WHERE id='{}'".format(field_values[1], field_values[0]))
             if field_values[1] == tables_ls[3]:
-                cur.execute("UPDATE {} SET {}='1' WHERE {}={}".format(tables_ls[4], book_cols[9], book_cols[9], field_values[0]))
-                cur.execute("DELETE FROM {} WHERE id='{}'".format(field_values[1], field_values[0]))
-            if field_values[1] == tables_ls[4]:
                 cur.execute("DELETE FROM {} WHERE id='{}'".format(field_values[1], field_values[0]))
             txt_result.config(text="Entry removed!", fg="red")
         conn.commit()
@@ -425,18 +392,18 @@ class Database_Management():
 
         txt_result = app.Text_Result()
         try:
-            if field_values[16] not in null_values:
-                box_id = field_values[16]
+            if field_values[15] not in null_values:
+                box_id = field_values[15]
                 file_name = client.file(box_id).get().name
                 file_path = os.path.join(main_path, file_name)
                 with open(file_path, 'wb') as open_file:
                     client.file('{}'.format(box_id)).download_to(open_file)
                 open_file.close()
             else:
-                items = client.search().query(query=field_values[14], limit=1, ancestor_folder_ids=[box_folder_id], file_extensions=[field_values[15]])
+                items = client.search().query(query=field_values[13], limit=1, ancestor_folder_ids=[box_folder_id], file_extensions=[field_values[14]])
                 for item in items:
                     box_id = item.id
-                file_name = field_values[14]+'.'+field_values[15]
+                file_name = field_values[13]+'.'+field_values[14]
                 file_path = os.path.join(main_path, file_name)
                 with open(file_path, 'wb') as open_file:
                     client.file('{}'.format(box_id)).download_to(open_file)
@@ -453,11 +420,10 @@ class Interact_With_Data():
     def Read_Records(self):
         self.tree.delete(*self.tree.get_children())
         cur.execute('''
-            SELECT book.id, book.title, book.series, genre.genre, subgenre.subgenre, author.author_first_name, author.author_middle_name, author.author_last_name, book.description, book.language, book.publisher, book.year, book.isbn, file.file_name, file.file_ext, file.box_id
+            SELECT book.id, book.title, book.series, genre.genre, subgenre.subgenre, book.author_first_name, book.author_middle_name, book.author_last_name, book.language, book.publisher, book.year, book.isbn, file.file_name, file.file_ext, file.box_id
             FROM book
             INNER JOIN genre ON book.genre_id = genre.id
             INNER JOIN subgenre ON genre.subgenre_id = subgenre.id
-            INNER JOIN author ON book.author_id = author.id
             INNER JOIN file ON book.file_id = file.id
             ORDER BY id ASC
             ''')
@@ -492,7 +458,7 @@ class Main_Application():
     def Form_Values(self):
         IDNUMBER = StringVar()
         TABLE = StringVar(self.root)
-        TABLE.set(tables_ls[4]) # default value
+        TABLE.set(tables_ls[3]) # default value
         TITLE = StringVar()
         SERIES = StringVar()
         GENRE = StringVar()
@@ -500,7 +466,6 @@ class Main_Application():
         AUTHOR_FIRST_NAME = StringVar()
         AUTHOR_MIDDLE_NAME = StringVar()
         AUTHOR_LAST_NAME = StringVar()
-        DESCRIPTION = StringVar()
         LANGUAGE = StringVar()
         PUBLISHER = StringVar()
         YEAR = StringVar()
@@ -508,7 +473,7 @@ class Main_Application():
         FILE_NAME = StringVar()
         FILE_EXT = StringVar()
         BOX_ID = StringVar()
-        crud_fields = [IDNUMBER, TABLE, TITLE, SERIES, GENRE, SUBGENRE, AUTHOR_FIRST_NAME, AUTHOR_MIDDLE_NAME, AUTHOR_LAST_NAME, DESCRIPTION, LANGUAGE, PUBLISHER, YEAR, ISBN, FILE_NAME, FILE_EXT, BOX_ID]
+        crud_fields = [IDNUMBER, TABLE, TITLE, SERIES, GENRE, SUBGENRE, AUTHOR_FIRST_NAME, AUTHOR_MIDDLE_NAME, AUTHOR_LAST_NAME, LANGUAGE, PUBLISHER, YEAR, ISBN, FILE_NAME, FILE_EXT, BOX_ID]
         
         return crud_fields
 
@@ -547,22 +512,20 @@ class Main_Application():
         txt_mediaMiddleName.grid(row=8, stick="e")
         txt_mediaLastName = Label(self.Forms, text="Author Last Name:", font=('arial', 12), bd=6)
         txt_mediaLastName.grid(row=9, stick="e")
-        txt_mediaDescription = Label(self.Forms, text="Description:", font=('arial', 12), bd=6)
-        txt_mediaDescription.grid(row=10, stick="e")
         txt_mediaLanguage = Label(self.Forms, text="Language:", font=('arial', 12), bd=6)
-        txt_mediaLanguage.grid(row=11, stick="e")
+        txt_mediaLanguage.grid(row=10, stick="e")
         txt_mediaPublisher = Label(self.Forms, text="Publisher:", font=('arial', 12), bd=6)
-        txt_mediaPublisher.grid(row=12, stick="e")
+        txt_mediaPublisher.grid(row=11, stick="e")
         txt_mediaYear = Label(self.Forms, text="Year:", font=('arial', 12), bd=6)
-        txt_mediaYear.grid(row=13, stick="e")
+        txt_mediaYear.grid(row=12, stick="e")
         txt_mediaISBN = Label(self.Forms, text="ISBN:", font=('arial', 12), bd=6)
-        txt_mediaISBN.grid(row=14, stick="e")
+        txt_mediaISBN.grid(row=13, stick="e")
         txt_mediaFileName = Label(self.Forms, text="File Name:", font=('arial', 12), bd=6)
-        txt_mediaFileName.grid(row=15, stick="e")
+        txt_mediaFileName.grid(row=14, stick="e")
         txt_mediaFileExtention = Label(self.Forms, text="File Extention:", font=('arial', 12), bd=6)
-        txt_mediaFileExtention.grid(row=16, stick="e")
+        txt_mediaFileExtention.grid(row=15, stick="e")
         txt_boxID = Label(self.Forms, text="Box ID:", font=('arial', 12), bd=6)
-        txt_boxID.grid(row=17, stick="e")
+        txt_boxID.grid(row=16, stick="e")
         txt_result = Label(self.Buttons)
         txt_result.pack(side=TOP)
 
@@ -587,22 +550,20 @@ class Main_Application():
         mediaAuthor_Middle_Name.grid(row=8, column=1)
         mediaAuthor_Last_Name = Entry(self.Forms, textvariable=self.crud_fields[8], width=30)
         mediaAuthor_Last_Name.grid(row=9, column=1)
-        mediaDescription = Entry(self.Forms, textvariable=self.crud_fields[9], width=30)
-        mediaDescription.grid(row=10, column=1)
-        mediaLanguage = Entry(self.Forms, textvariable=self.crud_fields[10], width=30)
-        mediaLanguage.grid(row=11, column=1)
-        mediaPublisher = Entry(self.Forms, textvariable=self.crud_fields[11], width=30)
-        mediaPublisher.grid(row=12, column=1)
-        mediaYear = Entry(self.Forms, textvariable=self.crud_fields[12], width=30)
-        mediaYear.grid(row=13, column=1)
-        mediaISBN = Entry(self.Forms, textvariable=self.crud_fields[13], width=30)
-        mediaISBN.grid(row=14, column=1)
-        mediaFileName = Entry(self.Forms, textvariable=self.crud_fields[14], width=30)
-        mediaFileName.grid(row=15, column=1)
-        mediaFileExtention = Entry(self.Forms, textvariable=self.crud_fields[15], width=30)
-        mediaFileExtention.grid(row=16, column=1)
-        mediaBoxID = Entry(self.Forms, textvariable=self.crud_fields[16], width=30)
-        mediaBoxID.grid(row=17, column=1)
+        mediaLanguage = Entry(self.Forms, textvariable=self.crud_fields[9], width=30)
+        mediaLanguage.grid(row=10, column=1)
+        mediaPublisher = Entry(self.Forms, textvariable=self.crud_fields[10], width=30)
+        mediaPublisher.grid(row=11, column=1)
+        mediaYear = Entry(self.Forms, textvariable=self.crud_fields[11], width=30)
+        mediaYear.grid(row=12, column=1)
+        mediaISBN = Entry(self.Forms, textvariable=self.crud_fields[12], width=30)
+        mediaISBN.grid(row=13, column=1)
+        mediaFileName = Entry(self.Forms, textvariable=self.crud_fields[13], width=30)
+        mediaFileName.grid(row=14, column=1)
+        mediaFileExtention = Entry(self.Forms, textvariable=self.crud_fields[14], width=30)
+        mediaFileExtention.grid(row=15, column=1)
+        mediaBoxID = Entry(self.Forms, textvariable=self.crud_fields[15], width=30)
+        mediaBoxID.grid(row=16, column=1)
 
     def Buttons_Manager(self):
         btn_download = Button(self.Buttons, width=10, text="Download", command=manage.Download_Books)
@@ -620,7 +581,7 @@ class Main_Application():
     def List_View(self):
         scrollbary = Scrollbar(self.Right, orient=VERTICAL)
         scrollbarx = Scrollbar(self.Right, orient=HORIZONTAL)
-        book_tree_cols = ['ID', 'Title', 'Series', 'Genre', 'Subgenre', 'Author First Name', 'Author Middle Name', 'Author Last Name', 'Description', 'Language', 'Publisher', 'Year', 'ISBN', 'File Name', 'File Extention', 'Box ID']
+        book_tree_cols = ['ID', 'Title', 'Series', 'Genre', 'Subgenre', 'Author First Name', 'Author Middle Name', 'Author Last Name', 'Language', 'Publisher', 'Year', 'ISBN', 'File Name', 'File Extention', 'Box ID']
         tree = ttk.Treeview(self.Right, columns=book_tree_cols, selectmode="extended", height=500, yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set)
         scrollbary.config(command=tree.yview)
         scrollbary.pack(side=RIGHT, fill=Y)
