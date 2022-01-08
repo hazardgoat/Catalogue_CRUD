@@ -9,7 +9,7 @@ import tkinter.ttk as ttk
 import tkinter.messagebox as tkMessageBox
 
 
-
+# column labels for the tables
 tables_ls = ["subgenre", "genre", "author", "file", "book"]
 book_cols = ["title", "series", "genre_id", "author_id", "description", "language", "publisher", "year", "isbn", "file_id"]
 genre_cols = ["genre", "subgenre_id"]
@@ -18,11 +18,13 @@ author_cols = ["author_first_name", "author_middle_name", "author_last_name"]
 file_cols = ["file_name", "file_ext", "box_id"]
 table_cols = [subgenre_cols, genre_cols, author_cols, file_cols, book_cols]
 
+# Box SDK parameters
 box_folder_id = 'xxxxxxxxxxxx'
 client_id = 'xxxxxxxxxxxx'
 client_secret = 'xxxxxxxxxxxx'
 developer_token = 'xxxxxxxxxxxx'
 
+# Snowflake Connection parameters
 user = 'xxxxxxxxxxxx'
 password = 'xxxxxxxxxxxx'
 account = 'xxxxxxxxxxxx'
@@ -51,15 +53,18 @@ engine = create_engine(URL(
         ))
 engine_conn = engine.connect()
 
-# True
-# False
+
+# Deletes the database if true
 delete_db = False
+# Creates the database if true
 create_db = False
+# Launches the GUI if true
 interact_db = True
 
 
-
+# Class that establishes the database and schema, then uploads it to Snowflake. Also allows for the the deletion of the database.
 class Database_Setup():
+    # Establishes the database and schema
     def Create_Database(self, tables=tables_ls):
         cur.execute("CREATE DATABASE IF NOT EXISTS {}".format(database))
         cur.execute("USE DATABASE {}".format(database))
@@ -137,7 +142,7 @@ class Database_Setup():
                 )
         conn.commit()
 
-
+    # Uploads the database and schema to Snowflake
     def Load_Library(self, tables=tables_ls):
         main_dir = r"C:\Users\User\Desktop\Catalogue_Tables"
         for table in tables:
@@ -148,15 +153,16 @@ class Database_Setup():
             df.to_sql('{}'.format(table), con=engine, index=False, if_exists='append')
         conn.commit()
 
-
+    # Deletes the database
     def Delete_Database(self):
         cur.execute("DROP DATABASE MY_LIBRARY")
         cur.close()     
         conn.close()
 
 
-
+# Class that allows for the adding, updating, and removal of records. Also allows for the downloading of files.
 class Database_Management():
+    # Adds individual records to the database
     def Add_Records(self, tables=tables_ls, table_columns=table_cols):
         txt_result = app.Text_Result()
         crud_fields = app.Crud()
@@ -250,7 +256,8 @@ class Database_Management():
             
         interact.Read_Records()
 
-
+    
+    # Updates individual records in the database
     def Update_Records(self, tables=tables_ls):
         crud_fields = app.Crud()
         txt_result = app.Text_Result()
@@ -345,7 +352,8 @@ class Database_Management():
             field.set("")
         interact.Read_Records()
 
-
+    
+    # Deletes individual records in the database
     def Delete_Records(self):
         crud_fields = app.Crud()
         txt_result = app.Text_Result()
@@ -371,7 +379,8 @@ class Database_Management():
             txt_result.config(text="Entry removed!", fg="red")
         conn.commit()
         interact.Read_Records()
-
+    
+    # Downloads individual records in the database
     def Download_Books(self):
         null_values = ["", '', ' ', " "]
 
@@ -412,11 +421,12 @@ class Database_Management():
             txt_result.config(text="Box ID or both File Name & File Extention must be entered!", fg="red")
 
 
-
+# Allows for updating the tree view in the GUI
 class Interact_With_Data():
     def __init__(self):
         self.tree = app.List_View()
-
+    
+    # Updates the tree view in the GUI
     def Read_Records(self):
         self.tree.delete(*self.tree.get_children())
         cur.execute('''
@@ -434,7 +444,7 @@ class Interact_With_Data():
         #conn.close()
 
 
-
+# Class managing the GUI application
 class Main_Application():
     def __init__(self, root):
         self.root = root
@@ -445,7 +455,8 @@ class Main_Application():
         self.Entry()
         self.Buttons_Manager()
         self.tree = self.List_View
-
+    
+    # Controls window size of the GUI
     def Window(self):
         self.root.title("Python SQL CRUD Applition")
         screen_width = self.root.winfo_screenwidth()
@@ -454,7 +465,8 @@ class Main_Application():
         height = int(screen_height/1.6)
         self.root.geometry(f'{width}x{height}')
         self.root.resizable(True, True)
-
+    
+    # Holds values entered via the GUI
     def Form_Values(self):
         IDNUMBER = StringVar()
         TABLE = StringVar(self.root)
@@ -476,7 +488,8 @@ class Main_Application():
         crud_fields = [IDNUMBER, TABLE, TITLE, SERIES, GENRE, SUBGENRE, AUTHOR_FIRST_NAME, AUTHOR_MIDDLE_NAME, AUTHOR_LAST_NAME, LANGUAGE, PUBLISHER, YEAR, ISBN, FILE_NAME, FILE_EXT, BOX_ID]
         
         return crud_fields
-
+    
+    # Controls the frames within the window
     def Frame(self):
         Top = Frame(self.root, width=900, height=50, bd=8)
         Top.pack(side=TOP)
@@ -490,7 +503,8 @@ class Main_Application():
         Buttons.pack(side=BOTTOM)
 
         return Top, Left, Right, Forms, Buttons
-
+    
+    # Labels of fields within the GUI
     def Labels(self):
         txt_apptitle = Label(self.Top, width=900, font=('arial', 24), text = "Python SQL CRUD Applition")
         txt_apptitle.pack()
@@ -531,6 +545,7 @@ class Main_Application():
 
         return txt_result
     
+    # Entry fields of the GUI
     def Entry(self):
         mediaID = Entry(self.Forms, textvariable=self.crud_fields[0], width=30)
         mediaID.grid(row=1, column=1)
@@ -564,7 +579,8 @@ class Main_Application():
         mediaFileExtention.grid(row=15, column=1)
         mediaBoxID = Entry(self.Forms, textvariable=self.crud_fields[15], width=30)
         mediaBoxID.grid(row=16, column=1)
-
+    
+    # Buttons of the GUI
     def Buttons_Manager(self):
         btn_download = Button(self.Buttons, width=10, text="Download", command=manage.Download_Books)
         btn_download.pack(side=LEFT)
@@ -577,7 +593,8 @@ class Main_Application():
         btn_delete.pack(side=LEFT)
         btn_exit = Button(self.Buttons, width=10, text="Exit", command=self.Exit)
         btn_exit.pack(side=LEFT)
-
+    
+    # Controls the tree view of the GUI
     def List_View(self):
         scrollbary = Scrollbar(self.Right, orient=VERTICAL)
         scrollbarx = Scrollbar(self.Right, orient=HORIZONTAL)
@@ -616,9 +633,7 @@ class Main_Application():
             root.destroy()
             exit()  
 
-
-
-
+# Runs the program
 if __name__ == '__main__':
     setup = Database_Setup()
     manage = Database_Management()
