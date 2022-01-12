@@ -1,30 +1,5 @@
-asn1crypto @ file:///home/conda/feedstock_root/build_artifacts/asn1crypto_1595949944546/work
-attrs==21.4.0
 boxsdk==2.14.0
-brotlipy @ file:///D:/bld/brotlipy_1636012392748/work
-certifi==2021.10.8
-cffi @ file:///D:/bld/cffi_1636046278333/work
-charset-normalizer==2.0.10
-cryptography @ file:///D:/bld/cryptography_1636040869199/work
-greenlet @ file:///D:/bld/greenlet_1635836959695/work
-idna==3.3
-numpy @ file:///D:/bld/numpy_1641177306887/work
-oscrypto @ file:///home/conda/feedstock_root/build_artifacts/oscrypto_1610205902676/work
-pandas @ file:///D:/bld/pandas_1639398467125/work
-pyarrow==5.0.0
-pycparser @ file:///home/conda/feedstock_root/build_artifacts/pycparser_1636257122734/work
-pycryptodomex @ file:///D:/bld/pycryptodomex_1638670106492/work
-PyJWT @ file:///home/conda/feedstock_root/build_artifacts/pyjwt_1638819640841/work
-pyOpenSSL @ file:///home/conda/feedstock_root/build_artifacts/pyopenssl_1633192417276/work
-PySocks @ file:///D:/bld/pysocks_1635862562854/work
-python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/python-dateutil_1626286286081/work
-pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1633452062248/work
-requests==2.27.0
-requests-toolbelt==0.9.1
-six @ file:///home/conda/feedstock_root/build_artifacts/six_1620240208055/work
-snowflake-connector-python @ file:///D:/bld/snowflake-connector-python_1639932410228/work
-snowflake-sqlalchemy @ file:///home/conda/feedstock_root/build_artifacts/snowflake-sqlalchemy_1639732109357/work
-SQLAlchemy @ file:///D:/bld/sqlalchemy_1640260733927/work
-urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1632350318291/work
-win-inet-pton @ file:///D:/bld/win_inet_pton_1635832858406/work
-wrapt==1.13.3
+pandas==1.3.5
+snowflake-connector-python==2.7.2
+snowflake-sqlalchemy==1.3.3
+sqlalchemy==1.4.29
