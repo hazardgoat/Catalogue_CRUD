@@ -506,7 +506,7 @@ class Main_Application():
     
     # Labels of fields within the GUI
     def Labels(self):
-        txt_apptitle = Label(self.Top, width=900, font=('arial', 24), text = "Python SQL CRUD Applition")
+        txt_apptitle = Label(self.Top, width=900, font=('arial', 24), text = "Python SQL CRUD Application")
         txt_apptitle.pack()
         txt_mediaID = Label(self.Forms, text="ID:", font=('arial', 12), bd=6)
         txt_mediaID.grid(row=1, stick="e")
